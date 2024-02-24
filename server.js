@@ -8,11 +8,20 @@ require("dotenv").config();
 const app = express();
 
 app.use(express.json());
-app.use(cors({ origin: process.env.ALLOWED_ORIGIN, credentials: true, exposedHeaders: ["set-cookie"] }));
+app.use(
+  cors({
+    origin: process.env.ALLOWED_ORIGIN,
+    credentials: true,
+    exposedHeaders: ["set-cookie"],
+  })
+);
 app.use(cookieParser());
 
 const authRoutes = require("./routes/authRoutes");
+const { requireAuth } = require("./middleware/auth");
+const profileRoutes = require("./routes/profileRoutes");
 app.use("/auth", authRoutes);
+app.use("/profile", requireAuth, profileRoutes);
 
 try {
   mongoose.connect(process.env.DB_URL).then((result) => {
