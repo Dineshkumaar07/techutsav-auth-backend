@@ -21,7 +21,7 @@ module.exports.signup_post = async (req, res) => {
       department,
     });
     const token = createToken({ user: user._id });
-    res.cookie("auth_token", token, { maxAge: maxAge * 1000 });
+    res.cookie("auth_token", token, { maxAge: maxAge * 1000, httpOnly: true });
     res.status(201).json({ msg: user._id });
   } catch (err) {
     const errors = handleError(err);
@@ -35,7 +35,7 @@ module.exports.login_post = async (req, res) => {
   try {
     const user = await User.login(email, password);
     const token = createToken(user._id);
-    res.cookie("auth_token", token, { maxAge: maxAge * 1000 });
+    res.cookie("auth_token", token, { maxAge: maxAge * 1000, httpOnly: true });
     res.status(200).json({ msg: user._id });
   } catch (err) {
     const errors = handleError(err);
@@ -44,6 +44,6 @@ module.exports.login_post = async (req, res) => {
 };
 
 module.exports.logout_get = (req, res) => {
-  res.cookie("auth_token", "", { maxAge: 1 });
+  res.cookie("auth_token", "", { maxAge: 1, httpOnly: true });
   res.status(200).json({ msg: "success" });
 };
