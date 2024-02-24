@@ -21,7 +21,7 @@ module.exports.signup_post = async (req, res) => {
       department,
     });
     const token = createToken({ user: user._id });
-    res.cookie("auth_token", token, { maxAge: maxAge * 1000, httpOnly: true });
+    res.cookie("auth_token", token, { maxAge: maxAge * 1000, httpOnly: true, sameSite: "none" });
     res.status(201).json({ msg: user._id });
   } catch (err) {
     const errors = handleError(err);
