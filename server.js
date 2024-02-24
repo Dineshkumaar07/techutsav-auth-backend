@@ -8,7 +8,7 @@ require("dotenv").config();
 const app = express();
 
 app.use(express.json());
-app.use(cors({ origin: process.env.ALLOWED_ORIGIN, credentials: true }));
+app.use(cors({ origin: process.env.ALLOWED_ORIGIN, credentials: true, exposedHeaders: ["set-cookie"] }));
 app.use(cookieParser());
 
 const authRoutes = require("./routes/authRoutes");
