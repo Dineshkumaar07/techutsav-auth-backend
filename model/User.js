@@ -31,13 +31,13 @@ const userSchema = new mongoose.Schema({
     required: [true, "Department Name is Required"],
     minLength: [2, "Length must be atleast 2 Characters"],
   },
-  eventsRegistered: {
-    type: Array,
-    default: [],
-  },
   paid: {
     type: Boolean,
     default: false,
+  },
+  transactionNumber: {
+    type: String,
+    default: ""
   },
   password: {
     type: String,

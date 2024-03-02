@@ -20,7 +20,7 @@ module.exports.handleError = (err) => {
   if (err.message === "Invalid Password") {
     errors.password = "This Password is Invalid";
   }
-
+  
   if (err.message.includes("user validation failed")) {
     Object.values(err.errors).forEach(({ properties }) => {
       errors[properties.path] = properties.message;
