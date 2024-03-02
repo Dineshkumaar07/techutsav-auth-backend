@@ -16,7 +16,7 @@ module.exports.handleError = (err, prop) => {
   }
 
   if (prop === "token" || prop === "db") {
-    errors.token = err;
+    errors[prop] = err;
     return errors;
   }
 

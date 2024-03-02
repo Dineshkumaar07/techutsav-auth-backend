@@ -14,6 +14,7 @@ module.exports.profile_get = (req, res) => {
         res.status(400).json({ errors });
       });
   } catch (err) {
+    console.log(err);
     const errors = handleError("DB Error", "db");
     res.status(400).json({ errors });
   }

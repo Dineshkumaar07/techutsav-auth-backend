@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { handleError } = require("../util/authErrorHandler");
+const { handleError } = require("../util/profileErrorHandler");
 
 module.exports.requireAuth = (req, res, next) => {
   const token = req.cookies.auth_token;
