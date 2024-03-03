@@ -20,8 +20,11 @@ app.use(cookieParser());
 const authRoutes = require("./routes/authRoutes");
 const { requireAuth } = require("./middleware/auth");
 const profileRoutes = require("./routes/profileRoutes");
+const eventRoutes = require("./routes/eventRoutes");
+
 app.use("/auth", authRoutes);
 app.use("/profile", requireAuth, profileRoutes);
+app.use("/event", eventRoutes);
 
 try {
   mongoose.connect(process.env.DB_URL).then((result) => {
