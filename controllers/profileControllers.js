@@ -1,6 +1,7 @@
 const User = require("../model/User");
 const jwt = require("jsonwebtoken");
 const { handleError } = require("../util/profileErrorHandler");
+const emailjs = require("@emailjs/nodejs");
 
 module.exports.profile_get = (req, res) => {
   const userID = jwt.decode(req.cookies.auth_token);
@@ -65,14 +66,32 @@ module.exports.unRegisterEvents_put = async (req, res) => {
 };
 
 module.exports.updateProfile_put = async (req, res) => {
-  const data = req.body;
+  const { transactionNumber, fullName, email } = req.body;
   const userID = jwt.decode(req.cookies.auth_token);
-  Object.keys(data).forEach(
-    (element) => data[element] === "" && delete data[element]
-  );
   try {
-    await User.updateOne({ _id: userID.id }, data)
+    await User.updateOne(
+      { _id: userID.id },
+      { transactionNumber: transactionNumber }
+    )
       .then((result) => {
+        var params = {
+          to_name: fullName,
+          to_mail: email,
+          main_message: "Thank you for completing the Payment Process. Your Payment has been successfully sent for verification to the Administrator. You will get an reply from the Admin within 36 Hours. If you didn't receive any Mail within the time period then please use the contact details provided in the Website for further communications.\nRegards, Team TechUtsav24.",
+        };
+        // console.log(params);
+        emailjs
+          .send(process.env.SERVICE_ID, process.env.TEMPLATE_ID, params, {
+            publicKey: process.env.PUBLIC_KEY,
+            privateKey: process.env.PRIVATE_KEY,
+          })
+          .then((result) => {
+            // console.log(result);
+            // console.log("Email Sent!");
+          })
+          .catch((err) => {
+            // console.log(err);
+          });
         res.status(200).json({ msg: "success" });
       })
       .catch((err) => {
