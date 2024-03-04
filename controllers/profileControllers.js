@@ -1,4 +1,5 @@
 const User = require("../model/User");
+const Event = require("../model/Event");
 const jwt = require("jsonwebtoken");
 const { handleError } = require("../util/profileErrorHandler");
 const emailjs = require("@emailjs/nodejs");
@@ -66,18 +67,22 @@ module.exports.unRegisterEvents_put = async (req, res) => {
 };
 
 module.exports.updateProfile_put = async (req, res) => {
-  const { transactionNumber, fullName, email } = req.body;
+  const { transactionNumber, fullName, email, selectedDepartment } = req.body;
   const userID = jwt.decode(req.cookies.auth_token);
   try {
     await User.updateOne(
       { _id: userID.id },
-      { transactionNumber: transactionNumber }
+      {
+        transactionNumber: transactionNumber,
+        selectedDepartment: selectedDepartment,
+      }
     )
       .then((result) => {
         var params = {
           to_name: fullName,
           to_mail: email,
-          main_message: "Thank you for completing the Payment Process. Your Payment has been successfully sent for verification to the Administrator. You will get an reply from the Admin within 36 Hours. If you didn't receive any Mail within the time period then please use the contact details provided in the Website for further communications.\nRegards, Team TechUtsav24.",
+          main_message:
+            "Thank you for completing the Payment Process. Your Payment has been successfully sent for verification to the Administrator. You will get an reply from the Admin within 36 Hours. If you didn't receive any Mail within the time period then please use the contact details provided in the Website for further communications.\nRegards, Team TechUtsav24.",
         };
         // console.log(params);
         emailjs
@@ -102,4 +107,16 @@ module.exports.updateProfile_put = async (req, res) => {
     const errors = handleError("Failed to Update", "db");
     res.status(400).json({ errors });
   }
+};
+
+module.exports.getEvents_post = async (req, res) => {
+  const { departmentName } = req.body;
+  Event.find({ department: departmentName })
+    .then((result) => {
+      res.status(400).json(result);
+    })
+    .catch((err) => {
+      const errors = handleError("Data Not Found", "db");
+      res.status(400).json({ errors });
+    });
 };
