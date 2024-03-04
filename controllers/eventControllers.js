@@ -52,17 +52,15 @@ module.exports.singleEvent_post = (req, res) => {
 module.exports.getFlagShipEvents_get = (req, res) => {
   Event.find({ flagship: true })
     .then((result) => {
-      res
-        .status(200)
-        .json(
-          result.map((element) => {
-            return {
-              uniqueName: element["uniqueName"],
-              eventName: element["eventName"],
-              eventAbstract: element["eventAbstract"],
-            };
-          })
-        );
+      res.status(200).json(
+        result.map((element) => {
+          return {
+            uniqueName: element["uniqueName"],
+            eventName: element["eventName"],
+            eventAbstract: element["eventAbstract"],
+          };
+        })
+      );
     })
     .catch((err) => {
       res.status(400).json({ msg: "Error" });
@@ -73,7 +71,7 @@ module.exports.getEvents_post = async (req, res) => {
   const { departmentName } = req.body;
   Event.find({ department: departmentName })
     .then((result) => {
-      res.status(400).json(result);
+      res.status(200).json(result);
     })
     .catch((err) => {
       const errors = handleError("Data Not Found", "db");
