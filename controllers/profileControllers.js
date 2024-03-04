@@ -111,6 +111,7 @@ module.exports.updateProfile_put = async (req, res) => {
 
 module.exports.getEvents_post = async (req, res) => {
   const { departmentName } = req.body;
+  console.log(departmentName);
   Event.find({ department: departmentName })
     .then((result) => {
       res.status(400).json(result);
