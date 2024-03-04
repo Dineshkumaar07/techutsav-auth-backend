@@ -68,3 +68,15 @@ module.exports.getFlagShipEvents_get = (req, res) => {
       res.status(400).json({ msg: "Error" });
     });
 };
+
+module.exports.getEvents_post = async (req, res) => {
+  const { departmentName } = req.body;
+  Event.find({ department: departmentName })
+    .then((result) => {
+      res.status(400).json(result);
+    })
+    .catch((err) => {
+      const errors = handleError("Data Not Found", "db");
+      res.status(400).json({ errors });
+    });
+};
