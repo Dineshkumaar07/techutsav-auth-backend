@@ -1,7 +1,7 @@
 const User = require("../model/User");
 const jwt = require("jsonwebtoken");
 const { handleError } = require("../util/authErrorHandler");
-const emailjs = require("@emailjs/nodejs");
+// const emailjs = require("@emailjs/nodejs");
 
 const maxAge = 3 * 24 * 60 * 60;
 
@@ -51,7 +51,7 @@ module.exports.signup_post = async (req, res) => {
       department,
       transactionNumber,
       selectedDepartment,
-    }).then((result) => {
+    }).then(async (result) => {
       const token = createToken({ user: result._id });
       var params = {
         to_name: fullName,
@@ -60,14 +60,28 @@ module.exports.signup_post = async (req, res) => {
           "Thank you for completing the Payment Process. Your Payment has been successfully sent for verification to the Administrator. You will get an reply from the Admin within 36 Hours. If you didn't receive any Mail within the time period then please use the contact details provided in the Website for further communications.\nRegards, Team TechUtsav24.",
       };
       // console.log(params);
-      emailjs
-        .send(process.env.SERVICE_ID, process.env.TEMPLATE_ID, params, {
-          publicKey: process.env.PUBLIC_KEY,
-          privateKey: process.env.PRIVATE_KEY,
-        })
+      // emailjs
+      //   .send(process.env.SERVICE_ID, process.env.TEMPLATE_ID, params, {
+      //     publicKey: process.env.PUBLIC_KEY,
+      //     privateKey: process.env.PRIVATE_KEY,
+      //   })
+      //   .then((output) => {
+      //     // console.log(result);
+      //     // console.log("Email Sent!");
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //     res.status(400).json({ msg: "error" });
+      //   });
+      const options = {
+        method: "POST",
+        body: JSON.stringify(params),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      await fetch("https://mail-service-faef.onrender.com/sendMail", options)
         .then((output) => {
-          // console.log(result);
-          // console.log("Email Sent!");
           res.cookie("auth_token", token, {
             maxAge: maxAge * 1000,
             httpOnly: true,
@@ -76,7 +90,6 @@ module.exports.signup_post = async (req, res) => {
           res.status(201).json({ msg: result._id });
         })
         .catch((err) => {
-          console.log(err);
           res.status(400).json({ msg: "error" });
         });
     });
